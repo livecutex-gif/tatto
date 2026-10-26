@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { NavLink, Link, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Calendar, Menu, X, Phone, ChevronDown, Image as ImageIcon, Video, Film, Sparkles, User, LogOut, Gift, ShieldCheck } from 'lucide-react';
 import { PhoenixLogo } from './PhoenixLogo';
 import { STUDIO_INFO } from '../data/studioData';
@@ -11,6 +11,7 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenRewards }) => {
+  const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [galleryDropdownOpen, setGalleryDropdownOpen] = useState(false);
   const [memberDropdownOpen, setMemberDropdownOpen] = useState(false);
@@ -19,6 +20,15 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenRewards }) 
   const memberDropdownRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const { user, isAuthenticated, signOut } = useMemberAuth();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 15);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Close dropdown on route change or click outside
   useEffect(() => {
@@ -53,24 +63,46 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenRewards }) 
 
   const isGalleryActive = location.pathname.startsWith('/gallery');
 
+  const isLinkActive = (path: string) => {
+    if (path === '/') {
+      return location.pathname === '/' && (!location.hash || location.hash === '');
+    }
+    if (path.includes('#')) {
+      const [targetPath, targetHash] = path.split('#');
+      const matchesPath = (!targetPath || targetPath === '/') ? location.pathname === '/' : location.pathname === targetPath;
+      return matchesPath && location.hash === `#${targetHash}`;
+    }
+    return location.pathname === path;
+  };
+
   return (
-    <header className="sticky top-0 z-40 bg-[#0B0B0B]/95 backdrop-blur-md border-b border-[#222222]/80 transition-all duration-300">
+    <header
+      className={`sticky top-0 z-40 transition-all duration-300 ${
+        scrolled
+          ? 'bg-[#0B0B0B]/95 backdrop-blur-xl border-b border-[#FFD60A]/25 shadow-[0_6px_28px_rgba(0,0,0,0.85)]'
+          : 'bg-[#0B0B0B]/85 backdrop-blur-md border-b border-[#222222]/80 shadow-none'
+      }`}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 sm:h-20 flex items-center justify-between gap-3 lg:gap-6">
         {/* Left: Round Phoenix Logo */}
         <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group shrink-0">
-          <PhoenixLogo size={42} className="shadow-lg shadow-black/40" />
+          <div className="relative flex items-center justify-center">
+            {/* Ambient soft glow aura on hover */}
+            <div className="absolute -inset-1 rounded-full bg-gradient-to-tr from-[#FFD60A]/40 to-amber-500/20 blur-xs opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <PhoenixLogo size={42} className="relative shadow-lg shadow-black/40 transition-transform duration-300 group-hover:scale-105 group-hover:rotate-1" />
+          </div>
           <div className="flex flex-col">
-            <span className="font-serif font-bold text-white tracking-wider text-sm sm:text-base lg:text-lg group-hover:text-[#FFD60A] transition-colors leading-tight">
+            <span className="font-serif font-bold text-white tracking-wider text-sm sm:text-base lg:text-lg group-hover:text-[#FFD60A] transition-colors duration-200 leading-tight">
               Phoenix Tattooz
             </span>
-            <span className="text-[9px] sm:text-[10px] tracking-[0.2em] uppercase text-zinc-400 font-medium">
+            <span className="text-[9px] sm:text-[10px] tracking-[0.2em] uppercase text-zinc-400 group-hover:text-zinc-300 font-medium transition-colors duration-200">
               Studio &amp; Academy
             </span>
           </div>
         </Link>
 
         {/* Center: Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-0.5 lg:gap-1.5 xl:gap-3">
+        <nav className="hidden md:flex items-center gap-0.5 lg:gap-1.5 xl:gap-2.5">
           {navLinks.map((link) => {
             if (link.isDropdown) {
               return (
@@ -83,32 +115,37 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenRewards }) 
                 >
                   <button
                     onClick={() => setGalleryDropdownOpen(!galleryDropdownOpen)}
-                    className={`relative py-1.5 px-2 text-xs lg:text-[13.5px] font-medium transition-colors flex items-center gap-1 cursor-pointer ${
+                    className={`relative py-1.5 px-2.5 text-xs lg:text-[13.5px] font-medium transition-all duration-200 flex items-center gap-1 cursor-pointer group hover:-translate-y-0.5 ${
                       isGalleryActive
                         ? 'text-white font-semibold'
                         : 'text-zinc-300 hover:text-white'
                     }`}
                   >
-                    <span>{link.name}</span>
+                    <span className="relative">
+                      {link.name}
+                      {!isGalleryActive && (
+                        <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-[#FFD60A]/70 group-hover:w-full transition-all duration-250 rounded-full" />
+                      )}
+                    </span>
                     <ChevronDown
-                      className={`w-3.5 h-3.5 text-[#FFD60A] transition-transform duration-200 ${
-                        galleryDropdownOpen ? 'rotate-180' : ''
+                      className={`w-3.5 h-3.5 text-[#FFD60A] transition-transform duration-300 ${
+                        galleryDropdownOpen ? 'rotate-180' : 'group-hover:rotate-12'
                       }`}
                     />
                     {isGalleryActive && (
-                      <span className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-[#FFD60A] rounded-full" />
+                      <span className="absolute bottom-0 left-2 right-2 h-[2.5px] bg-[#FFD60A] rounded-full shadow-[0_0_8px_#FFD60A]" />
                     )}
                   </button>
 
                   {/* Dropdown Menu Container */}
                   {galleryDropdownOpen && (
-                    <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 z-50 animate-in fade-in zoom-in-95 duration-150">
-                      <div className="w-72 bg-[#121212] border border-[#2B2B2B] rounded-2xl p-2 shadow-2xl shadow-black/80 backdrop-blur-xl space-y-1">
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 z-50 animate-in fade-in slide-in-from-top-2 zoom-in-95 duration-150">
+                      <div className="w-72 bg-[#121212]/95 border border-[#2B2B2B] rounded-2xl p-2 shadow-2xl shadow-black/80 backdrop-blur-xl space-y-1">
                         <div className="px-3 py-1.5 border-b border-zinc-800/80 flex items-center justify-between">
                           <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
                             Studio Showcase
                           </span>
-                          <span className="text-[10px] bg-[#FFD60A]/10 text-[#FFD60A] px-2 py-0.5 rounded-full font-mono font-bold">
+                          <span className="text-[10px] bg-[#FFD60A]/15 text-[#FFD60A] border border-[#FFD60A]/30 px-2 py-0.5 rounded-full font-mono font-bold animate-pulse">
                             Live Work
                           </span>
                         </div>
@@ -117,13 +154,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenRewards }) 
                         <Link
                           to="/gallery?tab=photos"
                           onClick={() => setGalleryDropdownOpen(false)}
-                          className={`group/item flex items-center gap-3 p-2.5 rounded-xl transition-all ${
+                          className={`group/item flex items-center gap-3 p-2.5 rounded-xl transition-all duration-200 ${
                             location.pathname === '/gallery' && !location.search.includes('videos')
                               ? 'bg-zinc-800/90 text-white'
-                              : 'text-zinc-300 hover:text-white hover:bg-zinc-900/90'
+                              : 'text-zinc-300 hover:text-white hover:bg-zinc-900/90 hover:translate-x-1'
                           }`}
                         >
-                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FFD60A]/20 to-amber-500/10 border border-[#FFD60A]/30 flex items-center justify-center shrink-0 group-hover/item:scale-105 group-hover/item:border-[#FFD60A] transition-all">
+                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FFD60A]/20 to-amber-500/10 border border-[#FFD60A]/30 flex items-center justify-center shrink-0 group-hover/item:scale-110 group-hover/item:border-[#FFD60A] group-hover/item:rotate-3 transition-all duration-200">
                             <ImageIcon className="w-5 h-5 text-[#FFD60A]" />
                           </div>
                           <div className="min-w-0 flex-1">
@@ -148,13 +185,13 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenRewards }) 
                         <Link
                           to="/gallery?tab=videos"
                           onClick={() => setGalleryDropdownOpen(false)}
-                          className={`group/item flex items-center gap-3 p-2.5 rounded-xl transition-all ${
+                          className={`group/item flex items-center gap-3 p-2.5 rounded-xl transition-all duration-200 ${
                             location.search.includes('videos')
                               ? 'bg-[#FFD60A]/15 border border-[#FFD60A]/40 text-white'
-                              : 'text-zinc-300 hover:text-white hover:bg-zinc-900/90'
+                              : 'text-zinc-300 hover:text-white hover:bg-zinc-900/90 hover:translate-x-1'
                           }`}
                         >
-                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500/20 to-red-500/10 border border-amber-500/30 flex items-center justify-center shrink-0 group-hover/item:scale-105 group-hover/item:border-amber-400 transition-all">
+                          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500/20 to-red-500/10 border border-amber-500/30 flex items-center justify-center shrink-0 group-hover/item:scale-110 group-hover/item:border-amber-400 group-hover/item:rotate-3 transition-all duration-200">
                             <Film className="w-5 h-5 text-amber-400" />
                           </div>
                           <div className="min-w-0 flex-1">
@@ -162,7 +199,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenRewards }) 
                               <span className="font-serif font-bold text-sm text-white group-hover/item:text-amber-400 transition-colors">
                                 Video Gallery
                               </span>
-                              <span className="text-[9px] font-extrabold bg-[#FFD60A] text-black px-1.5 py-0.5 rounded shadow-sm">
+                              <span className="text-[9px] font-extrabold bg-[#FFD60A] text-black px-1.5 py-0.5 rounded shadow-xs">
                                 🎬 Reels
                               </span>
                             </div>
@@ -178,36 +215,48 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenRewards }) 
               );
             }
 
+            const active = isLinkActive(link.path);
+            const isRewards = link.name.includes('Rewards');
             return (
-              <NavLink
+              <Link
                 key={link.name}
                 to={link.path}
-                onClick={(e) => {
-                  if (link.path.includes('#')) {
+                onClick={() => {
+                  if (link.path === '/') {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  } else if (link.path.includes('#')) {
                     const hash = link.path.split('#')[1];
-                    const elem = document.getElementById(hash);
-                    if (elem) {
-                      elem.scrollIntoView({ behavior: 'smooth' });
-                    }
+                    setTimeout(() => {
+                      const elem = document.getElementById(hash);
+                      if (elem) {
+                        elem.scrollIntoView({ behavior: 'smooth' });
+                      }
+                    }, 50);
                   }
                 }}
-                className={({ isActive }) =>
-                  `relative py-1.5 px-2 text-xs lg:text-[13.5px] font-medium transition-colors ${
-                    isActive
-                      ? 'text-white font-semibold'
-                      : 'text-zinc-300 hover:text-white'
-                  }`
-                }
+                className={`relative py-1.5 px-2.5 text-xs lg:text-[13.5px] font-medium transition-all duration-200 flex items-center gap-1 group/link hover:-translate-y-0.5 ${
+                  active
+                    ? 'text-white font-semibold'
+                    : 'text-zinc-300 hover:text-white'
+                }`}
               >
-                {({ isActive }) => (
-                  <>
+                <span className="relative flex items-center gap-1">
+                  {isRewards ? (
+                    <>
+                      <span>Rewards</span>
+                      <span className="animate-gift-wobble">🎁</span>
+                    </>
+                  ) : (
                     <span>{link.name}</span>
-                    {isActive && (
-                      <span className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-[#FFD60A] rounded-full" />
-                    )}
-                  </>
+                  )}
+                  {!active && (
+                    <span className="absolute -bottom-1 left-0 w-0 h-[2px] bg-[#FFD60A]/70 group-hover/link:w-full transition-all duration-250 rounded-full" />
+                  )}
+                </span>
+                {active && (
+                  <span className="absolute bottom-0 left-2 right-2 h-[2.5px] bg-[#FFD60A] rounded-full shadow-[0_0_8px_#FFD60A]" />
                 )}
-              </NavLink>
+              </Link>
             );
           })}
         </nav>
@@ -219,14 +268,14 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenRewards }) 
             <div className="relative" ref={memberDropdownRef}>
               <button
                 onClick={() => setMemberDropdownOpen(!memberDropdownOpen)}
-                className="relative w-8.5 h-8.5 sm:w-9 sm:h-9 rounded-full bg-[#121418] hover:bg-[#1C1F26] border border-[#FFD60A]/70 hover:border-[#FFD60A] flex items-center justify-center transition-all duration-200 shadow-md shadow-black/50 hover:shadow-[0_0_12px_rgba(255,214,10,0.3)] hover:scale-105 active:scale-95 cursor-pointer group"
+                className="relative w-9.5 h-9.5 sm:w-10 sm:h-10 rounded-full bg-[#121418] hover:bg-[#1C1F26] border border-[#FFD60A]/70 hover:border-[#FFD60A] flex items-center justify-center transition-all duration-200 shadow-md shadow-black/50 hover:shadow-[0_0_14px_rgba(255,214,10,0.4)] hover:scale-105 active:scale-95 cursor-pointer group"
                 title={`${user.name} (Member Club)`}
                 aria-label="Member Profile Menu"
               >
-                <div className="w-6.5 h-6.5 sm:w-7 sm:h-7 rounded-full bg-gradient-to-tr from-amber-600 to-[#FFD60A] text-black font-black text-xs flex items-center justify-center shadow-xs">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-gradient-to-tr from-amber-600 to-[#FFD60A] text-black font-black text-xs sm:text-sm flex items-center justify-center shadow-xs transition-transform duration-200 group-hover:scale-105">
                   {user.name ? user.name.charAt(0).toUpperCase() : 'M'}
                 </div>
-                <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 sm:w-2.5 sm:h-2.5 bg-emerald-400 rounded-full border-2 border-[#0B0B0B] shadow-[0_0_6px_#10B981]" />
+                <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 sm:w-3 sm:h-3 bg-emerald-400 rounded-full border-2 border-[#0B0B0B] shadow-[0_0_6px_#10B981] animate-pulse" />
               </button>
 
               {memberDropdownOpen && (
@@ -275,24 +324,29 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenRewards }) 
               )}
             </div>
           ) : (
-            /* Guest / Unauthenticated: Circular, smaller, noticeable Sign In icon button */
-            <button
-              onClick={() => triggerAuthModal({ mode: 'signin', title: 'Member Sign In', subtitle: 'Sign in to access your saved 15% discount and rewards.' })}
-              className="relative w-8.5 h-8.5 sm:w-9 sm:h-9 rounded-full bg-[#121418] hover:bg-[#1C1F26] border border-[#FFD60A]/70 hover:border-[#FFD60A] text-[#FFD60A] flex items-center justify-center transition-all duration-200 shadow-md shadow-black/50 hover:shadow-[0_0_12px_rgba(255,214,10,0.3)] hover:scale-105 active:scale-95 cursor-pointer group"
-              title="Member Club / Sign In"
-              aria-label="Member Club / Sign In"
-            >
-              <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#FFD60A] group-hover:scale-110 transition-transform" />
-              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 sm:w-2.5 sm:h-2.5 bg-[#FFD60A] rounded-full border-2 border-[#0B0B0B] shadow-[0_0_6px_#FFD60A]" />
-            </button>
+            /* Guest / Unauthenticated: Circular, pulsing Sign In icon button */
+            <div className="relative flex items-center justify-center">
+              <span className="absolute inset-0 rounded-full bg-[#FFD60A]/20 animate-ring-glow pointer-events-none" />
+              <button
+                onClick={() => triggerAuthModal({ mode: 'signin', title: 'Member Sign In', subtitle: 'Sign in to access your saved 15% discount and rewards.' })}
+                className="relative w-9.5 h-9.5 sm:w-10 sm:h-10 rounded-full bg-[#121418] hover:bg-[#1C1F26] border border-[#FFD60A]/70 hover:border-[#FFD60A] text-[#FFD60A] flex items-center justify-center transition-all duration-200 shadow-md shadow-black/50 hover:shadow-[0_0_14px_rgba(255,214,10,0.45)] hover:scale-105 active:scale-95 cursor-pointer group"
+                title="Member Club / Sign In"
+                aria-label="Member Club / Sign In"
+              >
+                <User className="w-4 h-4 sm:w-4.5 sm:h-4.5 text-[#FFD60A] group-hover:scale-115 transition-transform duration-200" />
+                <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-[#FFD60A] rounded-full border-2 border-[#0B0B0B] shadow-[0_0_6px_#FFD60A] animate-pulse" />
+              </button>
+            </div>
           )}
 
           <button
             onClick={() => onOpenBooking()}
-            className="flex items-center gap-1.5 bg-[#FFD60A] hover:bg-[#ffe033] active:scale-[0.98] text-[#0B0B0B] font-highlight font-extrabold text-xs sm:text-[13px] px-3.5 sm:px-4 py-2 sm:py-2.2 rounded-lg transition-all duration-200 cursor-pointer shadow-sm tracking-tight"
+            className="relative overflow-hidden group flex items-center gap-2 bg-[#FFD60A] hover:bg-[#ffe033] active:scale-[0.97] text-[#0B0B0B] font-highlight font-extrabold text-sm sm:text-base px-5 sm:px-6 py-2.5 sm:py-2.8 rounded-xl transition-all duration-200 cursor-pointer shadow-lg shadow-amber-500/20 hover:shadow-[0_0_24px_rgba(255,214,10,0.6)] hover:scale-105 tracking-normal shrink-0"
           >
-            <span>Book Appointment</span>
-            <Calendar className="w-3.5 h-3.5 text-[#0B0B0B]" />
+            {/* Shimmer light sweep */}
+            <div className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/45 to-transparent pointer-events-none animate-btn-shimmer" />
+            <span className="relative z-10 font-extrabold">Book Appointment</span>
+            <Calendar className="relative z-10 w-4 h-4 sm:w-4.5 sm:h-4.5 text-[#0B0B0B] transition-transform duration-200 group-hover:rotate-12 group-hover:scale-110" />
           </button>
         </div>
 
@@ -312,34 +366,40 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenRewards }) 
               aria-label="Member Profile"
             >
               <span className="text-[11px] font-black">{user.name ? user.name.charAt(0).toUpperCase() : 'M'}</span>
-              <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 bg-emerald-400 rounded-full border border-[#0B0B0B]" />
+              <span className="absolute -bottom-0.5 -right-0.5 w-2 h-2 bg-emerald-400 rounded-full border border-[#0B0B0B] animate-pulse" />
             </button>
           ) : (
-            <button
-              onClick={() => triggerAuthModal({ mode: 'signup', title: 'Join Member Club', subtitle: 'Sign up to unlock 15% discount rewards and gifts.' })}
-              className="relative w-8.5 h-8.5 rounded-full bg-[#121418] border border-[#FFD60A]/80 text-[#FFD60A] flex items-center justify-center shadow-xs active:scale-95 transition-all cursor-pointer"
-              title="Sign Up / Member Club"
-              aria-label="Sign In or Sign Up"
-            >
-              <User className="w-3.5 h-3.5 text-[#FFD60A]" />
-              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-[#FFD60A] rounded-full border border-[#0B0B0B] shadow-[0_0_4px_#FFD60A]" />
-            </button>
+            <div className="relative flex items-center justify-center">
+              <span className="absolute inset-0 rounded-full bg-[#FFD60A]/20 animate-ring-glow pointer-events-none" />
+              <button
+                onClick={() => triggerAuthModal({ mode: 'signup', title: 'Join Member Club', subtitle: 'Sign up to unlock 15% discount rewards and gifts.' })}
+                className="relative w-8.5 h-8.5 rounded-full bg-[#121418] border border-[#FFD60A]/80 text-[#FFD60A] flex items-center justify-center shadow-xs active:scale-95 transition-all cursor-pointer"
+                title="Sign Up / Member Club"
+                aria-label="Sign In or Sign Up"
+              >
+                <User className="w-3.5 h-3.5 text-[#FFD60A]" />
+                <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-[#FFD60A] rounded-full border border-[#0B0B0B] shadow-[0_0_4px_#FFD60A] animate-pulse" />
+              </button>
+            </div>
           )}
 
           <button
             onClick={() => onOpenBooking()}
             aria-label="Book appointment"
-            className="w-8.5 h-8.5 flex items-center justify-center bg-[#FFD60A] text-[#0B0B0B] rounded-lg shadow-xs active:scale-95 transition-transform cursor-pointer"
+            className="relative overflow-hidden group w-8.5 h-8.5 flex items-center justify-center bg-[#FFD60A] hover:bg-[#ffe033] text-[#0B0B0B] rounded-lg shadow-xs active:scale-90 hover:scale-105 transition-all duration-200 cursor-pointer"
           >
-            <Calendar className="w-4 h-4 text-[#0B0B0B]" />
+            <div className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/45 to-transparent pointer-events-none animate-btn-shimmer" />
+            <Calendar className="relative z-10 w-4 h-4 text-[#0B0B0B] group-hover:scale-110 group-hover:rotate-12 transition-transform duration-200" />
           </button>
 
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle navigation menu"
-            className="w-8.5 h-8.5 flex items-center justify-center text-zinc-300 hover:text-white rounded-lg bg-[#141518] border border-zinc-800 focus:outline-none cursor-pointer"
+            className="w-8.5 h-8.5 flex items-center justify-center text-zinc-300 hover:text-white rounded-lg bg-[#141518] border border-zinc-800 hover:border-zinc-600 focus:outline-none cursor-pointer transition-all duration-200 active:scale-90 hover:scale-105"
           >
-            {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            <div className="transition-transform duration-200">
+              {mobileMenuOpen ? <X className="w-4 h-4 text-[#FFD60A] rotate-90 transition-transform duration-200" /> : <Menu className="w-4 h-4" />}
+            </div>
           </button>
         </div>
       </div>
@@ -415,13 +475,17 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenRewards }) 
                 );
               }
 
+              const active = isLinkActive(link.path);
+              const isRewards = link.name.includes('Rewards');
               return (
-                <NavLink
+                <Link
                   key={link.name}
                   to={link.path}
                   onClick={() => {
                     setMobileMenuOpen(false);
-                    if (link.path.includes('#')) {
+                    if (link.path === '/') {
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } else if (link.path.includes('#')) {
                       const hash = link.path.split('#')[1];
                       setTimeout(() => {
                         const elem = document.getElementById(hash);
@@ -431,17 +495,24 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenRewards }) 
                       }, 100);
                     }
                   }}
-                  className={({ isActive }) =>
-                    `text-base font-medium py-2 px-3 rounded-xl transition-colors flex items-center justify-between ${
-                      isActive
-                        ? 'bg-zinc-800/80 text-[#FFD60A] font-semibold'
-                        : 'text-zinc-200 hover:text-white hover:bg-zinc-900'
-                    }`
-                  }
+                  className={`text-base font-medium py-2.5 px-3.5 rounded-xl transition-all duration-200 flex items-center justify-between active:scale-[0.98] ${
+                    active
+                      ? 'bg-zinc-800/90 text-[#FFD60A] font-semibold shadow-inner'
+                      : 'text-zinc-200 hover:text-white hover:bg-zinc-900/90 hover:translate-x-1'
+                  }`}
                 >
-                  <span>{link.name}</span>
-                  {link.name === 'Home' && <span className="text-xs text-zinc-500">Main</span>}
-                </NavLink>
+                  <span className="flex items-center gap-1.5">
+                    {isRewards ? (
+                      <>
+                        <span>Rewards</span>
+                        <span className="animate-gift-wobble">🎁</span>
+                      </>
+                    ) : (
+                      <span>{link.name}</span>
+                    )}
+                  </span>
+                  {link.name === 'Home' && <span className="text-xs text-zinc-500 font-normal">Main</span>}
+                </Link>
               );
             })}
           </nav>
@@ -518,10 +589,11 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenBooking, onOpenRewards }) 
                 setMobileMenuOpen(false);
                 onOpenBooking();
               }}
-              className="w-full flex items-center justify-center gap-2 bg-[#FFD60A] text-[#0B0B0B] font-semibold text-sm py-3 rounded-lg shadow-md cursor-pointer"
+              className="relative overflow-hidden group w-full flex items-center justify-center gap-2 bg-[#FFD60A] hover:bg-[#ffe033] text-[#0B0B0B] font-highlight font-extrabold text-sm py-3 rounded-lg shadow-md hover:shadow-[0_0_15px_rgba(255,214,10,0.4)] active:scale-[0.98] transition-all duration-200 cursor-pointer"
             >
-              <Calendar className="w-4 h-4" />
-              <span>Book Appointment</span>
+              <div className="absolute inset-0 w-1/2 h-full bg-gradient-to-r from-transparent via-white/45 to-transparent pointer-events-none animate-btn-shimmer" />
+              <Calendar className="relative z-10 w-4 h-4 text-[#0B0B0B] group-hover:rotate-12 transition-transform duration-200" />
+              <span className="relative z-10">Book Appointment</span>
             </button>
             <a
               href={`tel:${STUDIO_INFO.phone}`}

@@ -1250,22 +1250,9 @@ async function startServer() {
     app.use(vite.middlewares);
   }
 
-  const server = app.listen(PORT, '0.0.0.0', () => {
+  app.listen(PORT, '0.0.0.0', () => {
     console.log(`[Phoenix Studio Server] Running on http://0.0.0.0:${PORT} (Node: ${process.version})`);
-  });
-
-  server.on('error', (err) => {
-    console.error('[Phoenix Studio Server] Listen error:', err);
   });
 }
 
-process.on('uncaughtException', (err) => {
-  console.error('[Phoenix Studio Server] Uncaught Exception:', err);
-});
-
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('[Phoenix Studio Server] Unhandled Rejection at:', promise, 'reason:', reason);
-});
-
 startServer();
-

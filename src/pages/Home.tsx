@@ -72,14 +72,23 @@ export const Home: React.FC<HomeProps> = ({ onOpenBooking }) => {
 
   const popupOpacity = Math.max(0, popupRemainingMs / 7000);
 
-  const FALLBACK_VIDEO_URL = 'https://assets.mixkit.co/videos/preview/mixkit-tattoo-artist-working-on-a-tattoo-machine-42410-large.mp4';
-  const [activeVideoSrc, setActiveVideoSrc] = useState<string>(
-    heroSettings.bgVideoUrl || '/uploads/bg_video_1793020241737_2dc8t.mp4'
-  );
+  const PRIMARY_VIDEO_URL = '/uploads/studio_bg_video.mp4';
+  const LOCAL_VIDEO_URL = '/1011(2).mp4';
+
+  const [activeVideoSrc, setActiveVideoSrc] = useState<string>(() => {
+    if (heroSettings.bgVideoUrl && !heroSettings.bgVideoUrl.includes('1793020241737')) {
+      return heroSettings.bgVideoUrl;
+    }
+    return PRIMARY_VIDEO_URL;
+  });
 
   useEffect(() => {
     if (heroSettings.bgVideoUrl) {
-      setActiveVideoSrc(heroSettings.bgVideoUrl);
+      if (heroSettings.bgVideoUrl.includes('1793020241737')) {
+        setActiveVideoSrc(PRIMARY_VIDEO_URL);
+      } else {
+        setActiveVideoSrc(heroSettings.bgVideoUrl);
+      }
     }
   }, [heroSettings.bgVideoUrl]);
 
@@ -92,7 +101,6 @@ export const Home: React.FC<HomeProps> = ({ onOpenBooking }) => {
     const playPromise = video.play();
     if (playPromise !== undefined) {
       playPromise.catch((err) => {
-        // Autoplay policy handled gracefully
         console.log('Background video play status:', err);
       });
     }
@@ -174,29 +182,30 @@ export const Home: React.FC<HomeProps> = ({ onOpenBooking }) => {
               preload="auto"
               poster={heroSettings.bgVideoPoster || heroSettings.heroImage}
               onError={() => {
-                if (activeVideoSrc !== FALLBACK_VIDEO_URL) {
-                  console.warn('Custom background video failed, switching to fallback loop');
-                  setActiveVideoSrc(FALLBACK_VIDEO_URL);
+                if (activeVideoSrc !== LOCAL_VIDEO_URL) {
+                  console.warn('Switching to local 1011(2).mp4 directly');
+                  setActiveVideoSrc(LOCAL_VIDEO_URL);
                 }
               }}
               className="absolute inset-0 w-full h-full object-cover scale-[1.01]"
               src={activeVideoSrc}
             >
               <source src={activeVideoSrc} type="video/mp4" />
-              <source src={activeVideoSrc} type="video/webm" />
+              <source src="/uploads/studio_bg_video.mp4" type="video/mp4" />
+              <source src="/1011(2).mp4" type="video/mp4" />
               Your browser does not support the video tag.
             </video>
 
             {/* Adjustable Opacity Overlay from Admin Panel */}
             <div 
               className="absolute inset-0 bg-black pointer-events-none transition-opacity duration-300"
-              style={{ opacity: heroSettings.bgOverlayOpacity ?? 0.65 }}
+              style={{ opacity: heroSettings.bgOverlayOpacity ?? 0.55 }}
             />
           </div>
         )}
 
         {/* Layer 1: Dark Stone Textured Atmosphere & Volumetric Golden Smoke */}
-        <div className={`absolute inset-0 bg-[#090B0D] pointer-events-none ${heroSettings.bgMediaType !== 'image' && heroSettings.bgVideoUrl ? 'opacity-25' : 'opacity-100'}`} />
+        <div className={`absolute inset-0 bg-[#090B0D] pointer-events-none ${heroSettings.bgMediaType !== 'image' && activeVideoSrc ? 'opacity-20' : 'opacity-100'}`} />
 
         {/* Ambient Dark Stone Grain Texture Pattern */}
         <div 
@@ -227,8 +236,8 @@ export const Home: React.FC<HomeProps> = ({ onOpenBooking }) => {
         {/* Main Hero Container */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 lg:py-24 relative z-10 w-full">
           <div className="flex flex-col lg:flex-row items-start lg:items-center gap-6 lg:gap-10">
-            {/* Left Floating Social Proof Badges (Google Reviews & Hygiene & Safety) */}
-            <div className="flex flex-row lg:flex-col gap-3 sm:gap-4 shrink-0 w-full sm:w-auto justify-start">
+            {/* Floating Social Proof Badges (Google Reviews & Hygiene & Safety) - Below Hero on Mobile, Left Side on Desktop */}
+            <div className="flex flex-row lg:flex-col gap-3 sm:gap-4 shrink-0 w-full sm:w-auto justify-center sm:justify-start order-2 lg:order-1">
               {/* Badge 1: Google Reviews */}
               <a
                 href={`https://www.google.com/search?q=${encodeURIComponent('Phoenix Tattooz Studio & Academy Hisar')}`}
@@ -280,8 +289,8 @@ export const Home: React.FC<HomeProps> = ({ onOpenBooking }) => {
               </div>
             </div>
 
-            {/* Centerpiece Glassmorphic Hero Card */}
-            <div className="relative flex-1 max-w-2xl lg:max-w-3xl w-full">
+            {/* Centerpiece Glassmorphic Hero Card (Top on Mobile, Right on Desktop) */}
+            <div className="relative flex-1 max-w-2xl lg:max-w-3xl w-full order-1 lg:order-2">
               {/* Signature Golden Perimeter Halo Glow */}
               <div 
                 className="absolute -inset-1.5 sm:-inset-2.5 bg-gradient-to-r from-amber-500/40 via-yellow-400/35 to-amber-600/30 rounded-[28px] sm:rounded-[36px] blur-xl sm:blur-2xl opacity-80 sm:opacity-95 pointer-events-none"

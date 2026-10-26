@@ -1,6 +1,6 @@
 {
-  "version": 1792739011951,
-  "updatedAt": "2026-10-23T07:03:31.951Z",
+  "version": 1793025374051,
+  "updatedAt": "2026-10-26T14:36:14.051Z",
   "customer_reviews": [
     {
       "id": "r-1",
@@ -559,9 +559,14 @@
     "mainHeadingLine2": "STORY",
     "studioSubheading": "Phoenix Tattooz Studio & Academy",
     "heroDescription": "Custom tattoos. Professional artistry. A space where creativity meets expression. Located in Hisar, Haryana.",
-    "badge1": "6+ Years of Excellence",
+    "badge1": "8+ Years of Excellence",
     "badge2": "100% Sterile & Safe",
-    "badge3": "5.0 ★ Top Rated"
+    "badge3": "5.0 ★ Top Rated",
+    "bgMediaType": "video",
+    "bgVideoUrl": "/uploads/studio_bg_video.mp4",
+    "bgVideoPoster": "https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?auto=format&fit=crop&w=1200&q=80",
+    "bgOverlayOpacity": 0.65,
+    "bgVideoMuted": true
   },
   "about_settings": {
     "homeAboutImage": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?auto=format&fit=crop&w=1000&q=80",
@@ -616,7 +621,7 @@
     ]
   },
   "custom_logo": {
-    "customLogoUrl": null,
+    "customLogoUrl": "/assets/aistudio/unnamed__3__df6a950e.png",
     "logoShape": "circle",
     "showBorder": true,
     "borderColor": "#FFD60A",
@@ -647,5 +652,23 @@
       "discount_code": "PHX15-AARA-3284",
       "timestamp": "2026-10-26T11:07:05.566Z"
     }
-  ]
+  ],
+  "custom_home_hero": {
+    "heroImage": "https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?auto=format&fit=crop&w=1200&q=80",
+    "slogan": "Same Skin Different Story",
+    "subtitle": "Hisar Studio",
+    "altText": "Tattoo artist tattooing realistic lion on arm with black gloves",
+    "mainHeadingLine1": "INK YOUR",
+    "mainHeadingLine2": "STORY",
+    "studioSubheading": "Phoenix Tattooz Studio & Academy",
+    "heroDescription": "Custom tattoos. Professional artistry. A space where creativity meets expression. Located in Hisar, Haryana.",
+    "badge1": "8+ Years of Excellence",
+    "badge2": "100% Sterile & Safe",
+    "badge3": "5.0 ★ Top Rated",
+    "bgMediaType": "video",
+    "bgVideoUrl": "/uploads/studio_bg_video.mp4",
+    "bgVideoPoster": "https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?auto=format&fit=crop&w=1200&q=80",
+    "bgOverlayOpacity": 0.65,
+    "bgVideoMuted": true
+  }
 }

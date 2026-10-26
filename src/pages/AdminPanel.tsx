@@ -50,7 +50,6 @@ import {
 } from '../lib/adminAuth';
 import { getAppointmentsFromSupabase, SUPABASE_SQL_SCHEMA, SUPABASE_URL } from '../lib/supabase';
 import { PhoenixLogo } from '../components/PhoenixLogo';
-import { AdminLogoManager } from '../components/AdminLogoManager';
 import { AdminArtistsManager } from '../components/AdminArtistsManager';
 import { AdminGalleryManager } from '../components/AdminGalleryManager';
 import { AdminVideoGalleryManager } from '../components/AdminVideoGalleryManager';
@@ -74,7 +73,7 @@ export const AdminPanel: React.FC = () => {
   const [authSubmitting, setAuthSubmitting] = useState(false);
 
   // Dashboard Data State
-  const [activeTab, setActiveTab] = useState<'appointments' | 'inquiries' | 'members' | 'hero' | 'about' | 'reviews' | 'artists' | 'gallery' | 'videos' | 'logo' | 'rewards' | 'database'>('appointments');
+  const [activeTab, setActiveTab] = useState<'appointments' | 'inquiries' | 'members' | 'hero' | 'about' | 'reviews' | 'artists' | 'gallery' | 'videos' | 'rewards' | 'database'>('appointments');
   const [statusFilter, setStatusFilter] = useState<string>('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [appointments, setAppointments] = useState<any[]>([]);
@@ -326,7 +325,7 @@ export const AdminPanel: React.FC = () => {
   // VIEW B: LOGGED IN (FULL ADMIN DASHBOARD)
   // ==========================================
   interface AdminTabItem {
-    id: 'appointments' | 'inquiries' | 'members' | 'hero' | 'about' | 'reviews' | 'artists' | 'gallery' | 'videos' | 'logo' | 'rewards' | 'database';
+    id: 'appointments' | 'inquiries' | 'members' | 'hero' | 'about' | 'reviews' | 'artists' | 'gallery' | 'videos' | 'rewards' | 'database';
     label: string;
     short: string;
     icon: any;
@@ -344,7 +343,6 @@ export const AdminPanel: React.FC = () => {
     { id: 'rewards', label: 'Gifts & Rewards Images', short: 'Rewards', icon: Gift },
     { id: 'hero', label: 'Home Loop Video & Hero', short: 'Hero Video', icon: Video },
     { id: 'about', label: 'About Section & Story', short: 'About Story', icon: FileText },
-    { id: 'logo', label: 'Change Studio Logo', short: 'Logo', icon: ImageIcon },
     { id: 'database', label: 'Supabase Backend Config', short: 'Database', icon: Database },
   ];
 
@@ -358,9 +356,6 @@ export const AdminPanel: React.FC = () => {
             <div className="flex items-center gap-1.5 sm:gap-2">
               <span className="font-serif font-bold text-white text-sm sm:text-base truncate">
                 Phoenix Admin
-              </span>
-              <span className="hidden sm:inline-flex text-[10px] bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-mono">
-                Single Slot Sealed
               </span>
             </div>
             <p className="text-[10px] sm:text-[11px] text-zinc-400 truncate max-w-[130px] sm:max-w-none">
@@ -543,7 +538,6 @@ export const AdminPanel: React.FC = () => {
                 <option value="rewards">🎁 Gifts &amp; Rewards Images (3 Tiers)</option>
                 <option value="hero">🎬 Home Section 1 Loop Video &amp; Image</option>
                 <option value="about">📄 About Section &amp; Story</option>
-                <option value="logo">✨ Change Studio Logo</option>
                 <option value="database">🗄️ Supabase Backend Config</option>
                 <option value="live_site">← Go back to live side (Public Website)</option>
               </select>
@@ -936,15 +930,6 @@ export const AdminPanel: React.FC = () => {
         )}
 
         {/* ============================================================== */}
-        {/* TAB 5: CHANGE CUSTOM STUDIO LOGO */}
-        {/* ============================================================== */}
-        {activeTab === 'logo' && (
-          <div className="space-y-4">
-            <AdminLogoManager />
-          </div>
-        )}
-
-        {/* ============================================================== */}
         {/* TAB 4: SUPABASE CONFIG & SQL SETUP */}
         {/* ============================================================== */}
         {activeTab === 'database' && (
@@ -1084,7 +1069,7 @@ export const AdminPanel: React.FC = () => {
             <button
               onClick={() => setMobileMoreDrawerOpen(!mobileMoreDrawerOpen)}
               className={`flex flex-col items-center justify-center py-1 px-1.5 rounded-xl transition-all cursor-pointer ${
-                ['members', 'hero', 'about', 'logo', 'inquiries', 'database'].includes(activeTab) || mobileMoreDrawerOpen
+                ['members', 'hero', 'about', 'inquiries', 'database'].includes(activeTab) || mobileMoreDrawerOpen
                   ? 'text-[#FFD60A] font-bold'
                   : 'text-zinc-400 hover:text-white'
               }`}
@@ -1228,17 +1213,6 @@ export const AdminPanel: React.FC = () => {
                   <span>Rewards Images</span>
                 </div>
                 <p className="text-[10px] text-zinc-400">Change 3 tier reward images</p>
-              </button>
-
-              <button
-                onClick={() => { setActiveTab('logo'); setMobileMoreDrawerOpen(false); }}
-                className="p-3 rounded-xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-left space-y-1"
-              >
-                <div className="flex items-center gap-2 text-white font-bold">
-                  <ImageIcon className="w-4 h-4 text-amber-300" />
-                  <span>Studio Logo</span>
-                </div>
-                <p className="text-[10px] text-zinc-400">Upload custom studio logo</p>
               </button>
 
               <button

@@ -596,7 +596,7 @@ export const DEFAULT_HOME_HERO_SETTINGS: HomeHeroSettings = {
   badge2: '100% Sterile & Safe',
   badge3: '5.0 ★ Top Rated',
   bgMediaType: 'video',
-  bgVideoUrl: '/uploads/bg_video_1793020241737_2dc8t.mp4',
+  bgVideoUrl: '/uploads/studio_bg_video.mp4',
   bgVideoPoster: 'https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?auto=format&fit=crop&w=1200&q=80',
   bgOverlayOpacity: 0.65,
   bgVideoMuted: true,
@@ -610,6 +610,9 @@ export function getStoredHomeHero(): HomeHeroSettings {
     const raw = localStorage.getItem(HERO_STORAGE_KEY);
     if (raw) {
       const parsed = JSON.parse(raw);
+      if (parsed.bgVideoUrl && parsed.bgVideoUrl.includes('1793020241737')) {
+        parsed.bgVideoUrl = '/uploads/studio_bg_video.mp4';
+      }
       return { ...DEFAULT_HOME_HERO_SETTINGS, ...parsed };
     }
   } catch (e) {

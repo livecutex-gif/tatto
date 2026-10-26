@@ -1,47 +1,41 @@
 import React, { useState } from 'react';
-import { useLogoSettings } from '../lib/branding';
 
 interface LogoProps {
   className?: string;
   size?: number;
 }
 
+export const PERMANENT_LOGO_URL = '/assets/aistudio/unnamed__3__df6a950e.png';
+export const FALLBACK_LOGO_URL = '/logo.png';
+
 export const PhoenixLogo: React.FC<LogoProps> = ({ className = '', size = 52 }) => {
-  const logoSettings = useLogoSettings();
-  const [imgError, setImgError] = useState(false);
+  const [useFallback, setUseFallback] = useState(false);
+  const [svgFallback, setSvgFallback] = useState(false);
 
-  // If a custom logo is configured and valid, display it
-  if (logoSettings.customLogoUrl && !imgError) {
-    const shapeClass =
-      logoSettings.logoShape === 'circle'
-        ? 'rounded-full'
-        : logoSettings.logoShape === 'rounded'
-        ? 'rounded-xl'
-        : 'rounded-md';
+  const imgSrc = useFallback ? FALLBACK_LOGO_URL : PERMANENT_LOGO_URL;
 
-    const borderStyle = logoSettings.showBorder
-      ? { borderColor: logoSettings.borderColor || '#FFD60A', borderWidth: '2px', borderStyle: 'solid' }
-      : {};
-
-    const bgStyle = {
-      backgroundColor: logoSettings.backgroundColor === 'transparent' ? 'transparent' : (logoSettings.backgroundColor || '#FFD60A'),
-    };
-
+  if (!svgFallback) {
     return (
       <div 
-        className={`relative inline-flex items-center justify-center select-none overflow-hidden transition-transform duration-300 hover:scale-105 shadow-md ${shapeClass} ${className}`}
+        className={`relative inline-flex items-center justify-center select-none rounded-full overflow-hidden transition-all duration-300 hover:scale-105 shadow-md shadow-black/50 ring-2 ring-[#FFD60A] bg-[#FFD60A] shrink-0 ${className}`}
         style={{ 
           width: size, 
           height: size,
-          ...borderStyle,
-          ...bgStyle
         }}
       >
         <img
-          src={logoSettings.customLogoUrl}
+          src={imgSrc}
           alt="Phoenix Tattooz Studio & Academy Logo"
-          className={`w-full h-full ${logoSettings.logoShape === 'original' ? 'object-contain' : 'object-cover'}`}
-          onError={() => setImgError(true)}
+          className="w-full h-full object-cover rounded-full select-none"
+          loading="eager"
+          decoding="async"
+          onError={() => {
+            if (!useFallback) {
+              setUseFallback(true);
+            } else {
+              setSvgFallback(true);
+            }
+          }}
         />
       </div>
     );

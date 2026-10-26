@@ -11,14 +11,14 @@ export interface LogoSettings {
 }
 
 export const DEFAULT_LOGO_SETTINGS: LogoSettings = {
-  customLogoUrl: '/uploads/logo_1793020627648_sijil.png',
+  customLogoUrl: '/assets/aistudio/unnamed__3__df6a950e.png',
   logoShape: 'circle',
   showBorder: true,
   borderColor: '#FFD60A',
   backgroundColor: '#FFD60A',
 };
 
-const STORAGE_KEY = 'phoenix_studio_logo_settings_v1';
+const STORAGE_KEY = 'phoenix_studio_logo_settings_v2';
 const LOGO_UPDATED_EVENT = 'phoenix_studio_logo_updated';
 
 /**

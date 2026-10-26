@@ -1,0 +1,44 @@
+{
+  "custom_home_hero": {
+    "heroImage": "https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?auto=format&fit=crop&w=1200&q=80",
+    "slogan": "Same Skin Different Story",
+    "subtitle": "Hisar Studio",
+    "altText": "Tattoo artist tattooing realistic lion on arm with black gloves",
+    "mainHeadingLine1": "INK YOUR",
+    "mainHeadingLine2": "STORY",
+    "studioSubheading": "Phoenix Tattooz Studio & Academy",
+    "heroDescription": "Custom tattoos. Professional artistry. A space where creativity meets expression. Located in Hisar, Haryana.",
+    "badge1": "8+ Years of Excellence",
+    "badge2": "100% Sterile & Safe",
+    "badge3": "5.0 ★ Top Rated",
+    "bgMediaType": "video",
+    "bgVideoUrl": "/uploads/bg_video_1793020241737_2dc8t.mp4",
+    "bgVideoPoster": "https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?auto=format&fit=crop&w=1200&q=80",
+    "bgOverlayOpacity": 0.65,
+    "bgVideoMuted": true
+  },
+  "custom_logo": {
+    "customLogoUrl": "/uploads/logo_1793020627648_sijil.png",
+    "logoShape": "circle",
+    "showBorder": true,
+    "borderColor": "#FFD60A",
+    "backgroundColor": "#FFD60A"
+  },
+  "custom_about_content": {
+    "homeAboutImage": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?auto=format&fit=crop&w=1000&q=80",
+    "homeAboutImageBadge": "Studio Reception • Hisar",
+    "homeAboutHeading": "Phoenix Tattooz Studio & Academy",
+    "homeAboutParagraph1": "Phoenix Tattooz Studio & Academy is a creative space in Hisar, Haryana, where art, passion and self-expression come together. We specialize in custom tattoos with a focus on quality, hygiene and a comfortable experience for every client.",
+    "homeAboutParagraph2": "Along with our studio, we run a dedicated academy to help aspiring artists learn, grow and build their skills in the world of tattooing.",
+    "homeAboutTagline": "“Ink Your Story”",
+    "aboutStoryImage": "https://images.unsplash.com/photo-1512690459411-b9245aed614b?auto=format&fit=crop&w=800&q=80",
+    "aboutStoryImageBadge": "Hisar Studio",
+    "aboutStoryHeading": "How It All Began",
+    "aboutStoryParagraph1": "Phoenix Tattooz Studio & Academy was founded in 2019 with a simple vision — to create a space where art, creativity and self-expression come together. What started as a passion for tattooing has now grown into a trusted studio and academy, known for its quality, hygiene and artistic excellence in Hisar, Haryana.",
+    "aboutStoryParagraph2": "We are not just about tattoos, we are about people, their stories, and the art that brings them to life.",
+    "aboutStoryTagline": "Phoenix Tattooz Studio & Academy",
+    "aboutStorySlogan": "“Same Skin Different Story”",
+    "aboutHeroTagline": "Your Story / Our Art",
+    "aboutHeroDescription": "More than just a tattoo studio, we are a creative space where art meets passion. We help you express your story through ink, with safety, professionalism and unmatched artistry."
+  }
+}
